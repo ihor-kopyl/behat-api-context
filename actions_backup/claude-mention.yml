@@ -1,0 +1,27 @@
+name: Claude Mention
+
+on:
+  pull_request:
+    types: [labeled]
+
+jobs:
+  mention-claude:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+      id-token: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Run Claude Inline Review
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          label_trigger: ai-review
+          prompt: Please review this PR and post inline comments on the changed code.
