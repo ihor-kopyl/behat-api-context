@@ -15,7 +15,7 @@ final class ORMContext implements Context
 {
     private EntityManagerInterface $manager;
 
-    public function __construct(EntityManagerInterface $manager)
+    public function __construct($manager)
     {
         $this->manager = $manager;
     }
