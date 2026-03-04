@@ -7,8 +7,8 @@ on:
 jobs:
   skip-notice:
     if: |
-      github.event.label.name == 'size/m' ||
-      github.event.label.name == 'S'
+      github.event.label.name == 'xs' ||
+      github.event.label.name == 's'
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
@@ -26,8 +26,7 @@ jobs:
 
   claude-review:
     if: |
-      github.event.label.name == 'XS' ||
-      github.event.label.name == 'M'
+      github.event.label.name == 'm'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -51,7 +50,7 @@ jobs:
           prompt: '/code-review:code-review ${{ github.repository }}/pull/${{ github.event.pull_request.number }}'
 
   claude-review-with-comments:
-    if: github.event.label.name == 'S'
+    if: github.event.label.name == 'm'
     runs-on: ubuntu-latest
     permissions:
       contents: read
