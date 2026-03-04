@@ -2,11 +2,12 @@ name: Claude PR Review
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [labeled]
 
 jobs:
   review:
     runs-on: ubuntu-latest
+    if: github.event.label.name == 'ai-review'
     permissions:
       contents: read
       pull-requests: write
@@ -21,6 +22,7 @@ jobs:
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          label_trigger: ai-review
           prompt: |
             Review this pull request and provide detailed feedback.
 
