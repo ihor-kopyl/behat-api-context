@@ -7,8 +7,8 @@ on:
 jobs:
   skip-notice:
     if: |
-      github.event.label.name == 'L' ||
-      github.event.label.name == 'XL'
+      github.event.label.name == 'M' ||
+      github.event.label.name == 'S'
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
