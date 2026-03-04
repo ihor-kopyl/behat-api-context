@@ -50,7 +50,20 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Comment that Claude review was skipped
+      - name: Mention claude is recommended
+        if: steps.size.outputs.large != 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body: `> [!SUCCESS]\n> 👌 Please mention **claude** to ask AI codereview.`
+            })
+
+
+      - name: Mention claude is NOT recommended
         if: steps.size.outputs.large == 'true'
         uses: actions/github-script@v7
         with:
@@ -59,5 +72,5 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.payload.pull_request.number,
-              body: `> [!WARNING]\n> 🙅 Mentioning **Claude** is not recommended due to PR size is:  \`${{ github.event.label.name }}\`.\n>  Please request a manual review instead.`
+              body: `> [!WARNING]\n> 🙅 Mentioning **Claude** is not recommended due to PR size is to big.\n>  Please request a manual review instead.`
             })
