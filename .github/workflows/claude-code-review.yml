@@ -7,8 +7,7 @@ on:
 jobs:
   skip-notice:
     if: |
-      github.event.label.name == 'xs' ||
-      github.event.label.name == 's'
+      github.event.label.name == 'l'
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
@@ -21,55 +20,5 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.payload.pull_request.number,
-              body: `> [!WARNING]\n> **Claude review skipped** — this PR is size \`${{ github.event.label.name }}\`. Please request a manual review.`
+              body: `> [!WARNING]\n> **Mentioning Claude is not recommended due to PR size is: * — \`${{ github.event.label.name }}\`.\n>  Please request a manual review instead.`
             })
-
-  claude-review:
-    if: |
-      github.event.label.name == 'size/m'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: read
-      issues: read
-      id-token: write
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-
-      - name: Run Claude Code Review
-        id: claude-review
-        uses: anthropics/claude-code-action@v1
-        with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          plugin_marketplaces: 'https://github.com/anthropics/claude-code.git'
-          plugins: 'code-review@claude-code-plugins'
-          prompt: '/code-review:code-review ${{ github.repository }}/pull/${{ github.event.pull_request.number }}'
-
-  claude-review-with-comments:
-    if: github.event.label.name == 'size/m'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: write
-      issues: write
-      id-token: write
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-
-      - name: Run Claude Code Review with inline comments
-        uses: anthropics/claude-code-action@v1
-        with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          plugin_marketplaces: 'https://github.com/anthropics/claude-code.git'
-          plugins: 'code-review@claude-code-plugins'
-          prompt: '/code-review:code-review ${{ github.repository }}/pull/${{ github.event.pull_request.number }}'
-
