@@ -21,8 +21,7 @@ jobs:
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          model: claude-opus-4-6
-          direct_prompt: |
+          prompt: |
             Review this pull request and provide detailed feedback.
 
             Focus on:
@@ -34,3 +33,4 @@ jobs:
             - Performance issues
 
             Post your review as comments on the PR, using inline comments on specific lines where relevant.
+          claude_args: --model claude-opus-4-6
