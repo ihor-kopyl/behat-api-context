@@ -25,7 +25,6 @@ jobs:
             })
 
   mention-claude:
-    if: github.event.label.name == 'size/m'
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
