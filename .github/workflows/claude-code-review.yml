@@ -7,7 +7,7 @@ on:
 jobs:
   skip-notice:
     if: |
-      github.event.label.name == 'size/l'
+      github.event.label.name == 'size/m'
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
@@ -20,5 +20,5 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.payload.pull_request.number,
-              body: `> [!WARNING]\n> 🙅 **Mentioning Claude is not recommended due to PR size is: ** — \`${{ github.event.label.name }}\`.\n>  Please request a manual review instead.`
+              body: `> [!WARNING]\n> **Mentioning Claude is not recommended due to PR size is: ** — \`${{ github.event.label.name }}\`.\n>  Please request a manual review instead.`
             })
