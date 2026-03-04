@@ -1,4 +1,4 @@
-name: PR Size + Claude Guard
+name: PR Size Label + Claude Guard
 
 on:
   pull_request:
@@ -8,6 +8,7 @@ jobs:
   label:
     name: Label PR size
     runs-on: ubuntu-latest
+
     permissions:
       pull-requests: write
 
@@ -30,12 +31,16 @@ jobs:
       pull-requests: write
 
     steps:
-      - name: Check PR labels
+      - name: Check PR size label
         id: size
         run: |
-          labels=$(gh pr view ${{ github.event.pull_request.number }} --json labels --jq '.labels[].name')
+          labels=$(gh pr view ${{ github.event.pull_request.number }} \
+            --repo ${{ github.repository }} \
+            --json labels \
+            --jq '.labels[].name')
 
-          echo "Labels: $labels"
+          echo "Labels:"
+          echo "$labels"
 
           if echo "$labels" | grep -E "size/l|size/xl"; then
             echo "large=true" >> $GITHUB_OUTPUT
