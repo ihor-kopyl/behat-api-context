@@ -26,7 +26,7 @@ jobs:
 
   claude-review:
     if: |
-      github.event.label.name == 'm'
+      github.event.label.name == 'size/m'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -50,7 +50,7 @@ jobs:
           prompt: '/code-review:code-review ${{ github.repository }}/pull/${{ github.event.pull_request.number }}'
 
   claude-review-with-comments:
-    if: github.event.label.name == 'm'
+    if: github.event.label.name == 'size/m'
     runs-on: ubuntu-latest
     permissions:
       contents: read
