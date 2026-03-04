@@ -6,7 +6,6 @@ on:
 
 jobs:
   mention-claude:
-    if: github.event.label.name == 'size/m'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -19,9 +18,10 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Run Claude Review
+      - name: Run Claude Inline Review
         uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          prompt: Please review this PR and post your findings as comments.
+          label_trigger: ai-review
+          prompt: Please review this PR and post inline comments on the changed code.

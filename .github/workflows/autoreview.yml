@@ -1,0 +1,51 @@
+name: Claude Code Review
+
+on:
+  pull_request:
+    types: [labeled]
+
+jobs:
+  claude-review:
+    if: github.event.label.name == 'claude'
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+      id-token: write
+      actions: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Run Claude Code Review
+        id: claude-review
+        uses: anthropics/claude-code-action@beta
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+
+          # чтобы обновлял один и тот же комментарий
+          use_sticky_comment: true
+
+          # разрешаем читать результаты CI
+          additional_permissions: |
+            actions: read
+
+          direct_prompt: |
+            Review this pull request as a senior backend engineer.
+
+            Focus on:
+            - Potential bugs
+            - Security issues
+            - Performance problems
+            - Edge cases
+            - Missing or weak tests
+            - Architecture and maintainability
+
+            Ignore trivial style issues.
+
+            Leave a GitHub comment with your review.
