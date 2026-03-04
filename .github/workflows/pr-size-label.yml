@@ -59,7 +59,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.payload.pull_request.number,
-              body: `> [!SUCCESS]\n> 👌 Please mention **claude** to ask AI codereview.`
+              body: `> [!TIP]\n> 👌 Please mention **claude** to ask AI codereview.`
             })
 
 
