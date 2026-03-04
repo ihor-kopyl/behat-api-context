@@ -1,4 +1,4 @@
-name: PR Size Label + Claude Guard
+name: PR Size Label + Claude Guard 🤖
 
 on:
   pull_request:
