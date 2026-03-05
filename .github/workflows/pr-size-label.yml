@@ -2,11 +2,12 @@ name: PR Size Label + Claude Guard
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [opened, synchronize, reopened, ready_for_review]
 
 jobs:
   label:
     name: Label PR size
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
 
     permissions:
@@ -17,10 +18,10 @@ jobs:
         uses: codelytv/pr-size-labeler@v1
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          xs_max_size: 10
-          s_max_size: 50
-          m_max_size: 150
-          l_max_size: 500
+          xs_max_size: ${{ vars.PR_SIZE_XS_MAX }}
+          s_max_size: ${{ vars.PR_SIZE_S_MAX }}
+          m_max_size: ${{ vars.PR_SIZE_M_MAX }}
+          l_max_size: ${{ vars.PR_SIZE_L_MAX }}
           fail_if_xl: false
 
   skip-notice:
@@ -50,27 +51,36 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Mention claude is recommended
-        if: steps.size.outputs.large != 'true'
+      - name: Upsert claude notice
         uses: actions/github-script@v7
         with:
           script: |
-            github.rest.issues.createComment({
+            const large = '${{ steps.size.outputs.large }}' === 'true';
+            const marker = '<!-- claude-notice -->';
+            const body = large
+              ? `${marker}\n> [!WARNING]\n> 🙅 Mentioning **Claude** is not recommended due to PR size is to big.\n>  Please request a manual review instead.`
+              : `${marker}\n> [!TIP]\n> 👌 Please mention **@.claude** to ask AI codereview.`;
+
+            const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.payload.pull_request.number,
-              body: `> [!SUCCESS]\n> 👌 Please mention **claude** to ask AI codereview.`
-            })
+            });
 
+            const existing = comments.find(c => c.body.includes(marker));
 
-      - name: Mention claude is NOT recommended
-        if: steps.size.outputs.large == 'true'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.payload.pull_request.number,
-              body: `> [!WARNING]\n> 🙅 Mentioning **Claude** is not recommended due to PR size is to big.\n>  Please request a manual review instead.`
-            })
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.pull_request.number,
+                body,
+              });
+            }
