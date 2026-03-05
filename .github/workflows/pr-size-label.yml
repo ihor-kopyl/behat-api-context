@@ -14,6 +14,26 @@ jobs:
       pull-requests: write
 
     steps:
+      - name: Remove existing size labels
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: labels } = await github.rest.issues.listLabelsOnIssue({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+            });
+            for (const label of labels) {
+              if (label.name.startsWith('size/')) {
+                await github.rest.issues.removeLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.payload.pull_request.number,
+                  name: label.name,
+                });
+              }
+            }
+
       - name: Label PR size
         uses: codelytv/pr-size-labeler@v1
         with:
@@ -61,7 +81,7 @@ jobs:
               ? `${marker}\n> [!WARNING]\n> 🙅 Mentioning **Claude** is not recommended due to PR size is to big.\n>  Please request a manual review instead.`
               : `${marker}\n> [!TIP]\n> 👌 Please mention **@.claude** to ask AI codereview.`;
 
-            const { data: comments } = await github.rest.issues.listComments({
+            const comments = await github.paginate(github.rest.issues.listComments, {
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.payload.pull_request.number,
