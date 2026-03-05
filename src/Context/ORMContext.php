@@ -23,7 +23,7 @@ final class ORMContext implements Context
     /**
      * @And I see :count entities :entityClass
      */
-    public function andISeeInRepository(int $count, string $entityClass): void
+    public function andISeeInRepository($count, string $entityClass): void
     {
         $this->seeInRepository($count, $entityClass);
     }
