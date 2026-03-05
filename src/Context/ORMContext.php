@@ -15,7 +15,7 @@ final class ORMContext implements Context
 {
     private EntityManagerInterface $manager;
 
-    public function __construct(EntityManagerInterface $manager)
+    public function __construct($manager)
     {
         $this->manager = $manager;
     }
@@ -23,7 +23,7 @@ final class ORMContext implements Context
     /**
      * @And I see :count entities :entityClass
      */
-    public function andISeeInRepository(int $count, string $entityClass): void
+    public function andISeeInRepository($count, string $entityClass): void
     {
         $this->seeInRepository($count, $entityClass);
     }
@@ -31,7 +31,7 @@ final class ORMContext implements Context
     /**
      * @Then I see :count entities :entityClass
      */
-    public function thenISeeInRepository(int $count, string $entityClass): void
+    public function thenISeeInRepository($count, string $entityClass): void
     {
         $this->seeInRepository($count, $entityClass);
     }
