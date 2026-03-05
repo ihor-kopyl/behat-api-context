@@ -18,10 +18,10 @@ jobs:
         uses: codelytv/pr-size-labeler@v1
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          xs_max_size: ${{ vars.PR_SIZE_XS_MAX }}
-          s_max_size: ${{ vars.PR_SIZE_S_MAX }}
-          m_max_size: ${{ vars.PR_SIZE_M_MAX }}
-          l_max_size: ${{ vars.PR_SIZE_L_MAX }}
+          xs_max_size: ${{ vars.PR_SIZE_XS }}
+          s_max_size: ${{ vars.PR_SIZE_S }}
+          m_max_size: ${{ vars.PR_SIZE_M }}
+          l_max_size: ${{ vars.PR_SIZE_L }}
           fail_if_xl: false
 
   skip-notice:
